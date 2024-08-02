@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
   @override
-  _NotificationsPageState createState() => _NotificationsPageState();
+  _NotificationScreenState createState() => _NotificationScreenState();
 }
 
-class _NotificationsPageState extends State<NotificationScreen> {
+class _NotificationScreenState extends State<NotificationScreen> {
   DateTime? selectedDate;
 
   @override
@@ -13,12 +13,6 @@ class _NotificationsPageState extends State<NotificationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Phản hồi nhanh'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // Xử lý khi nhấn nút back
-          },
-        ),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
@@ -47,7 +41,7 @@ class _NotificationsPageState extends State<NotificationScreen> {
           ],
         ),
       ),
-      );
+    );
   }
 
   Widget _buildSearchBar() {
@@ -112,19 +106,19 @@ class _NotificationsPageState extends State<NotificationScreen> {
     return ListView(
       children: [
         _buildNotificationItem(
-          'assets/avatar1.png', // Thay thế bằng đường dẫn thực tế của ảnh đại diện
+          'assets/images/meme-tat-22.jpg', 
           'Trao đổi tại Ghi chú ghi chú mô hình - Kiểm thử combine mô hình',
           'không xóa được ghi chú đã đăng',
           Colors.green.shade100,
         ),
         _buildNotificationItem(
-          'assets/avatar2.png', // Thay thế bằng đường dẫn thực tế của ảnh đại diện
+          'assets/images/Loading.png', 
           'Trao đổi tại Thảo luận Quy trình đang thảo luận',
           'ngfjgngdnbfdb\n171011_QĐ 1056-QĐ-BXD-Chương trình khung đào tạo BIM.pdf',
           Colors.yellow.shade100,
         ),
         _buildNotificationItem(
-          'assets/avatar1.png', // Thay thế bằng đường dẫn thực tế của ảnh đại diện
+          'assets/images/Capycapy.png', 
           'Trao đổi tại Thảo luận Quy trình đang thảo luận',
           'Hương Giang: Đã có bản final nhé.',
           Colors.green.shade100,

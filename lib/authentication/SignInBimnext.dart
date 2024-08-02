@@ -1,32 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:ideco_app/authentication/SignInWithGoogle.dart';
-import 'package:ideco_app/authentication/SignUp.dart';
-import 'package:ideco_app/global/AuthProvider.dart';
 import 'dart:convert';
 
 import 'package:ideco_app/home/homePage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatelessWidget {
+class Signinbimnext extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LoginForm(),
+      body: LoginFormBimnext(),
     );
   }
 }
 
-class LoginForm extends StatefulWidget {
+class LoginFormBimnext extends StatefulWidget {
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _LoginFormBimnextState createState() => _LoginFormBimnextState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _LoginFormBimnextState extends State<LoginFormBimnext> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
@@ -54,9 +49,7 @@ class _LoginFormState extends State<LoginForm> {
                 _forgotPasswordField(),
                 const SizedBox(height: 20.0),
                 _buildLoginButton(),
-                const SizedBox(height: 5.0),
-                _buildSignUp(),
-                const SizedBox(height: 5.0),
+                const SizedBox(height: 20.0),
                 _buildLoginButtonWithGoogle(),
                 const SizedBox(height: 20.0),
                 _buildLoginButtonWithAutoDesk(),
@@ -78,16 +71,14 @@ class _LoginFormState extends State<LoginForm> {
     final String password = _passwordController.text.trim();
 
     try {
-      // Gọi API để đăng nhập
-      final response = await http.post(
-        Uri.parse('https://authdev.corebim.com/auth/v1/UserLogin'),
+      final response = await http.post(   
+        Uri.parse('https://172.16.1.58:6868/v2/auth/login'),
         headers: {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'usernameOrEmail': email,
+          'email': email,
           'password': password,
-          'authType': 1,
         }),
       );
 
@@ -96,63 +87,19 @@ class _LoginFormState extends State<LoginForm> {
         print(responseData);
 
         if (responseData['statusCode'] == 200) {
-          var data = responseData['data'];
-          var accessToken = data['accessToken'];
-
-          // chuyển token sang JWT
-          var decodedToken = JwtDecoder.decode(accessToken);
-          //Lấy thông tin từ decodedToken để lấy thông tin của người dùng
-          var nameIdentifier = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
-          print('Name Identifier: $nameIdentifier');
-
-          // Gọi API để lấy thông tin người dùng bằng nameIdentifier
-          final userResponse = await http.get(
-            Uri.parse('https://dpuapidev.corebim.com/auth/v1/UserGetById/$nameIdentifier'),
-            headers: {
-              'Authorization': 'Bearer $accessToken',
-              'Content-Type': 'application/json',
-            },
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
-
-          if (userResponse.statusCode == 200) {
-            var userResponseData = jsonDecode(userResponse.body);
-            print(userResponseData);
-
-            if (userResponseData['statusCode'] == 200) {
-              var userDataDetails = userResponseData['data'];
-
-              // Tạo đối tượng UserData với thông tin chi tiết
-              var userData = UserData(
-                nameIdentifier: nameIdentifier,
-                accessToken: accessToken,
-                firstName: userDataDetails['firstName'],
-                lastName: userDataDetails['lastName'],
-                fullName: userDataDetails['fullName'],
-                phoneNumber: userDataDetails['phoneNumber'],
-                username: userDataDetails['username'],
-                email: userDataDetails['email'],
-              );
-              // Lưu token vào SharedPreferences
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.setString('accessToken', accessToken);
-
-              // Điều hướng đến HomePage và truyền dữ liệu qua arguments
-              Get.offAll(() => HomePage(),arguments: userData);
-            } else {
-              _showErrorDialog();
-            }
-          } else {
-            print('User data response body: ${userResponse.body}');
-            _showErrorDialog();
-          }
         } else {
           _showErrorDialog();
         }
       } else {
-        print('Login response body: ${response.body}');
+        print('Response body: ${response.body}');
         _showErrorDialog();
       }
     } catch (error) {
+      print("object");
       print(error);
       _showErrorDialog();
     }
@@ -161,9 +108,6 @@ class _LoginFormState extends State<LoginForm> {
       _isLoading = false;
     });
   }
-
-
-
 
   void _showErrorDialog() {
     showDialog(
@@ -187,8 +131,8 @@ class _LoginFormState extends State<LoginForm> {
 
   Widget _logoLogin() {
     return Image.asset(
-      'assets/icons/splashhomescreen.png', // Đường dẫn của hình ảnh trong thư mục assets
-      width: 100, // Kích thước của logo
+      'assets/icons/splashhomescreen.png', 
+      width: 100, 
       height: 100,
     );
   }
@@ -280,25 +224,25 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Widget _forgotPasswordField() {
-    return Align(
-      alignment: Alignment.centerRight, 
-      child: TextButton(
-        onPressed: () {
-          // Thực hiện hành động khi nhấn vào liên kết "Forgot Password?"
-          // Ví dụ: điều hướng đến một trang khác
-          print('Forgot Password button pressed');
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
-        },
-        child: const Text(
-          'Quên mật khẩu?', // Văn bản của liên kết
-          style: TextStyle(
-            color: Color.fromARGB(255, 4, 255, 75), // Màu của liên kết
-            fontSize: 15.0,
-          ),
+  return Align(
+    alignment: Alignment.centerRight, 
+    child: TextButton(
+      onPressed: () {
+        // Thực hiện hành động khi nhấn vào liên kết "Forgot Password?"
+        // Ví dụ: điều hướng đến một trang khác
+        print('Forgot Password button pressed');
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
+      },
+      child: const Text(
+        'Quên mật khẩu?', // Văn bản của liên kết
+        style: TextStyle(
+          color: Color.fromARGB(255, 4, 255, 75), // Màu của liên kết
+          fontSize: 15.0,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
 
   Widget _buildLoginButton() {
@@ -322,25 +266,14 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Widget _buildSignUp() {
-    return Align(
-      alignment: Alignment.centerLeft, 
-      child: TextButton(
-        onPressed: () => Get.to(() => SignUpScreen()),
-        child: const Text(
-          'Chưa có tài khoản, đăng kí', // Văn bản của liên kết
-          style: TextStyle(
-            color: Color.fromARGB(255, 4, 255, 75), // Màu của liên kết
-            fontSize: 15.0,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildLoginButtonWithGoogle() {
     return InkWell(
-      onTap: () => Get.to(() => SignInWithGoogle()),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SignInWithGoogle(),
+        ));
+      },
       child: Container(
         width: 60.0, // Đặt kích thước vòng tròn
         height: 60.0,
@@ -367,8 +300,6 @@ class _LoginFormState extends State<LoginForm> {
       ),
     );
   }
-
-
 
 
   Widget _buildLoginButtonWithAutoDesk() {

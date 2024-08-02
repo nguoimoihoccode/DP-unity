@@ -1,18 +1,16 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:ideco_app/global/global.dart';
 import 'package:ideco_app/home/homePage.dart';
-import 'package:ideco_app/utils/constants/sizes.dart';
+import 'package:ideco_app/utils/constants/text_strings.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  final Map<String, String?> userInfo = Get.arguments;
 
-  @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
-}
+  RegisterScreen() : super();
 
-class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,26 +22,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
           },
         ),
       ),
-      body: SignUpForm(),
+      body: RegisterForm(email: userInfo['email']),
     );
   }
 }
 
-class SignUpForm extends StatefulWidget {
-  const SignUpForm({super.key});
+class RegisterForm extends StatefulWidget {
+  final String? email;
+
+  RegisterForm({this.email}) : super();
 
   @override
-  _SignUpFormState createState() => _SignUpFormState();
+  _RegisterFormState createState() => _RegisterFormState();
 }
 
-class _SignUpFormState extends State<SignUpForm> {
+class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _firstName = TextEditingController();
   final TextEditingController _lastName = TextEditingController();
   final TextEditingController _userName = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _password = TextEditingController();
-  final TextEditingController _phonenumber = TextEditingController();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.email != null) {
+      Global.email = widget.email!;
+      _emailController.text = widget.email!;
+      print('Email: ${Global.email}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,30 +128,6 @@ class _SignUpFormState extends State<SignUpForm> {
                   fillColor: Color(0xFFF6F6F6),
                 ),
               ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _phonenumber,
-                decoration: const InputDecoration(
-                  labelText: 'Phone number',
-                  labelStyle: TextStyle(color: Color(0xFFBDBDBD)),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE8E8E8), width: 2.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _password,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: TextStyle(color: Color(0xFFBDBDBD)),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE8E8E8), width: 2.0),
-                  ),
-                ),
-              ),
               const SizedBox(height: 50.0),
               InkWell(
                 onTap: () async {
@@ -156,9 +140,13 @@ class _SignUpFormState extends State<SignUpForm> {
                   String lastName = _lastName.text;
                   String username = _userName.text;
                   String activatedKey = Global.activatedKey;
+                  print(email);
+                  print(firstName);
+                  print(lastName);
+                  print(username);
 
                   if (email.isNotEmpty && firstName.isNotEmpty && lastName.isNotEmpty && username.isNotEmpty) {
-                    Map<String, dynamic> signUpData = {
+                    Map<String, dynamic> registerData = {
                       'email': email,
                       'firstName': firstName,
                       'lastName': lastName,
@@ -166,15 +154,15 @@ class _SignUpFormState extends State<SignUpForm> {
                       'activatedKey': activatedKey,
                     };
 
-                    String signUpJson = jsonEncode(signUpData);
+                    String registerJson = jsonEncode(registerData);
 
-                    var url = Uri.parse('https://dpuapidev.corebim.com/auth/v1/UserRegister');
+                    var url = Uri.parse('https://dpuapidev.corebim.com/auth/v1/UserSignUpWithGoogle');
                     var response = await http.post(
                       url,
                       headers: <String, String>{
                         'Content-Type': 'application/json; charset=UTF-8',
                       },
-                      body: signUpJson,
+                      body: registerJson,
                     );
 
                     setState(() {
@@ -192,6 +180,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         _showErrorDialog('We have an error, we will try to fix it.');
                       }
                     } else {
+                      print('API request failed with status: ${response.statusCode}');
                       _showErrorDialog('We have an error, we will try to fix it.');
                     }
                   } else {
@@ -199,6 +188,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       _isLoading = false; // Stop loading if fields are not filled
                     });
 
+                    print('Please fill all fields');
                     _showErrorDialog('Please enter all field data.');
                   }
                 },
@@ -223,7 +213,7 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
         ),
         if (_isLoading)
-          const Center(
+          Center(
             child: CircularProgressIndicator(),
           ),
       ],

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ideco_app/authentication/SignIn.dart';
-import 'package:ideco_app/home/homeScreen.dart';
+import 'package:ideco_app/authentication/SignInBimnext.dart';
+import 'package:ideco_app/home/homePage.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -12,12 +14,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Đợi 3 giây sau đó chuyển đến trang đăng nhập
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-    });
+    Future.delayed(const Duration(seconds: 1), 
+      () => Get.offAll(() => LoginScreen()),
+    );
   }
 
   @override

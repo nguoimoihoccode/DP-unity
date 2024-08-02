@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class CloudPage extends StatelessWidget {
   final List<FileCardData> fileCardDataList = [
-    FileCardData('Nội bộ', 'A01 - 28/03/2024', 'assets/folder.png', ['assets/avatar1.png', 'assets/avatar2.png']),
-    FileCardData('Kiểm tra phân quyền', 'A01 - 28/03/2024', 'assets/folder.png', ['assets/avatar1.png', 'assets/avatar2.png']),
-    FileCardData('Chức năng mới', 'A01 - 28/03/2024', 'assets/folder.png', ['assets/avatar1.png', 'assets/avatar2.png']),
-    FileCardData('Xử lý lỗi', 'A01 - 28/03/2024', 'assets/folder.png', ['assets/avatar1.png', 'assets/avatar2.png']),
-    FileCardData('Mô hình upload V3', 'A01 - 28/03/2024', 'assets/folder.png', ['assets/avatar1.png', 'assets/avatar2.png']),
-    FileCardData('separation.mp3', 'A01 - 15/05/2024', 'assets/music.png', ['assets/avatar1.png', 'assets/avatar2.png']),
+    FileCardData('Nội bộ', 'A01 - 28/03/2024', 'assets/icons/google_icons.png', ['assets/icons/google_icons.png', 'assets/icons/google_icons.png']),
+    FileCardData('Kiểm tra phân quyền', 'A01 - 28/03/2024', 'assets/icons/google_icons.png', ['assets/icons/google_icons.png', 'assets/icons/google_icons.png']),
+    FileCardData('Chức năng mới', 'A01 - 28/03/2024', 'assets/icons/google_icons.png', ['assets/icons/google_icons.png', 'assets/icons/google_icons.png']),
+    FileCardData('Xử lý lỗi', 'A01 - 28/03/2024', 'assets/icons/google_icons.png', ['assets/icons/google_icons.png', 'assets/icons/google_icons.png']),
+    FileCardData('Mô hình upload V3', 'A01 - 28/03/2024', 'assets/icons/google_icons.png', ['assets/icons/google_icons.png', 'assets/icons/google_icons.png']),
+    FileCardData('separation.mp3', 'A01 - 15/05/2024', 'assets/images/meme-tat-22.jpg', ['assets/icons/google_icons.png', 'assets/icons/google_icons.png']),
   ];
 
   @override
@@ -52,9 +52,9 @@ class CloudPage extends StatelessWidget {
 
   Widget _buildFileGrid() {
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 200, // Điều chỉnh kích thước tối đa của phần tử
-        crossAxisSpacing: 8,
+        crossAxisSpacing: 10,
         mainAxisSpacing: 8,
         childAspectRatio: 2 / 3, // Điều chỉnh tỷ lệ phần tử nếu cần
       ),
