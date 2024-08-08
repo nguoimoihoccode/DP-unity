@@ -1,11 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:ideco_app/authentication/SignInWithGoogle.dart';
+import 'package:ideco_app/authentication/SignUp.dart';
+import 'package:ideco_app/common/widgets/login_sign_up/form_divider.dart';
+import 'package:ideco_app/global/User.dart';
 import 'dart:convert';
 
 import 'package:ideco_app/home/homePage.dart';
+import 'package:ideco_app/utils/constants/text_strings.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Signinbimnext extends StatelessWidget {
   @override
@@ -30,30 +37,42 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEAF3E7),
-      body: SingleChildScrollView( // Bọc toàn bộ nội dung trong SingleChildScrollView
-        child: Center(
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               mainAxisSize: MainAxisSize.min, // Đảm bảo Column chỉ chiếm không gian cần thiết
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                const SizedBox(height: 20.0),
                 _logoLogin(),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 10.0),
                 _buildTitle(),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 10.0),
                 _buildEmailField(),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 10.0),
                 _buildPasswordField(),
-                const SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                 _forgotPasswordField(),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 10.0),
                 _buildLoginButton(),
+                const SizedBox(height: 5.0),
+                _buildSignUp(),
                 const SizedBox(height: 20.0),
-                _buildLoginButtonWithGoogle(),
+                _buildLine(),
                 const SizedBox(height: 20.0),
-                _buildLoginButtonWithAutoDesk(),
-                const SizedBox(height: 20.0),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildLoginButtonWithGoogle(),
+                      const SizedBox(height: 20.0,width: 20.0,),
+                      _buildLoginButtonWithAutoDesk(),
+                      const SizedBox(height: 20.0, width: 20.0,),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -72,7 +91,7 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
 
     try {
       final response = await http.post(   
-        Uri.parse('https://172.16.1.58:6868/v2/auth/login'),
+        Uri.parse('https://bimnextapi-dev.dpunity.com/v2/auth/login'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -82,20 +101,31 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
         }),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         var responseData = jsonDecode(response.body);
         print(responseData);
 
-        if (responseData['statusCode'] == 200) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-          );
-        } else {
+        if (responseData['access_token'] != null) {
+          // var userDataDetails = responseData['user'];
+          print(responseData['access_token']);
+          
+          // In ra dữ liệu JSON để kiểm tra
+          // print('User Data Details: $userDataDetails');
+
+          // Lưu token vào SharedPreferences
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('accessToken', responseData['access_token']);
+          print('Saved testKey: ${prefs.getString('accessToken')}');
+
+          // Điều hướng đến HomePage và truyền dữ liệu qua arguments
+          Get.offAll(() => HomePage(), arguments: responseData);
+        }
+        else {
           _showErrorDialog();
         }
       } else {
         print('Response body: ${response.body}');
+        print('Response body: ${response.statusCode}');
         _showErrorDialog();
       }
     } catch (error) {
@@ -115,7 +145,7 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
       builder: (context) {
         return AlertDialog(
           title: const Text('SORRY'),
-          content: const Text('You entered an incorrect username or password.guest @Aa123123'),
+          content: const Text('You entered an incorrect username or password.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -249,31 +279,71 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
     return InkWell(
       onTap: _isLoading ? null : _login,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 150.0),
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         decoration: BoxDecoration(
           color: const Color(0xFF269947),
           borderRadius: BorderRadius.circular(30.0),
         ),
-        child: const Text(
-          'Đăng Nhập',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+        child: Center(
+          child: const Text(
+            'Đăng Nhập',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
     );
   }
 
+  Widget _buildSignUp() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start, // Căn chỉnh các thành phần bên trái
+      children: <Widget>[
+        TextButton(
+          onPressed: () => Get.to(() => SignUpScreen()),
+          child: const Text(
+            'Chưa có tài khoản, đăng kí',
+            style: TextStyle(
+              color: Color.fromARGB(255, 0, 0, 0), // Màu của liên kết
+              fontSize: 12.0,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLine() {
+    return Stack(
+      alignment: Alignment.center, // Căn giữa các phần tử trong Stack
+      children: <Widget>[
+        FormDivider(dividerText: TTexts.orSignUpWith.capitalize!,),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 20.0), // Khoảng trắng hai bên văn bản
+        //   child: Container(
+        //     height: 1.0, // Chiều cao của đường thẳng
+        //     color: Colors.black, // Màu của đường thẳng
+        //     width: double.infinity, // Chiều rộng của đường thẳng
+        //   ),
+        // ),
+        // const Text(
+        //   'Or signin by',
+        //   style: TextStyle(
+        //     backgroundColor: Colors.white,
+        //     color: Color.fromARGB(255, 0, 0, 0), // Màu của văn bản
+        //     fontSize: 17.0,
+        //   ),
+        // ),
+      ],
+    );
+  }
+
   Widget _buildLoginButtonWithGoogle() {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SignInWithGoogle(),
-        ));
-      },
+      onTap: () => Get.to(() => SignInWithGoogle()),
       child: Container(
         width: 60.0, // Đặt kích thước vòng tròn
         height: 60.0,

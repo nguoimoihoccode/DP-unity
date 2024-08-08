@@ -43,6 +43,7 @@ dependencies:
   dart_jsonwebtoken: ^2.14.0
   jwt_decoder: ^2.0.1
   shared_preferences: ^2.3.0
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +76,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - .env
 
   fonts:
     - family: Poppins

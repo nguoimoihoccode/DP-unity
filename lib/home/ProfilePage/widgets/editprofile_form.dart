@@ -10,6 +10,16 @@ class EditForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = Get.arguments;
+    final Map<String, dynamic>? userInfo = arguments is Map<String, dynamic> ? arguments : null;
+
+    // Lấy các giá trị từ userInfo hoặc userData
+    final String userName = userInfo?['userName'] ?? userInfo?['user']?['fullname'] ?? 'User';
+    final String userId = userInfo?['userID'] ?? userInfo?['user']?['id']?? 'null';
+
+    print(userId);
+    print(userName);
+    
     return Form(
       child: Column(
         children: [

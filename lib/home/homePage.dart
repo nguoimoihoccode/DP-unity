@@ -35,35 +35,40 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset : false,
-      appBar: AppBar(
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        top: true,
+        bottom: true,
+        left: false,
+        right: false,
+        child: _pages[_selectedIndex],
       ),
-      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.grey,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Iconsax.home, color: Colors.black,),
+            icon: Icon(Iconsax.home, color: Color.fromARGB(255, 3, 255, 12),),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Iconsax.cloud, color: Colors.black,),
+            icon: Icon(Iconsax.cloud, color: Color.fromARGB(255, 0, 255, 8),),
             label: 'Cloud',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Iconsax.message, color: Colors.black,),
+            icon: Icon(Iconsax.message, color: Color.fromARGB(255, 0, 255, 8),),
             label: 'Chat',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Iconsax.notification, color: Colors.black,),
+            icon: Icon(Iconsax.notification, color: Color.fromARGB(255, 0, 255, 8),),
             label: 'Notifications',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Iconsax.profile_circle, color: Colors.black,),
+            icon: Icon(Iconsax.profile_circle, color: Color.fromARGB(255, 0, 255, 8),),
             label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 0, 0, 0),
+        selectedItemColor: Color.fromARGB(255, 0, 255, 4),
         onTap: _onItemTapped,
       ),
     );

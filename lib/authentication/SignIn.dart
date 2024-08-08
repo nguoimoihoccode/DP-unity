@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:ideco_app/authentication/ForgotPassword.dart';
 import 'package:ideco_app/authentication/SignInWithGoogle.dart';
 import 'package:ideco_app/authentication/SignUp.dart';
 import 'package:ideco_app/global/AuthProvider.dart';
@@ -35,33 +39,45 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEAF3E7),
-      body: SingleChildScrollView( // Bọc toàn bộ nội dung trong SingleChildScrollView
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // Đảm bảo Column chỉ chiếm không gian cần thiết
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                _logoLogin(),
-                const SizedBox(height: 20.0),
-                _buildTitle(),
-                const SizedBox(height: 20.0),
-                _buildEmailField(),
-                const SizedBox(height: 20.0),
-                _buildPasswordField(),
-                const SizedBox(height: 8.0),
-                _forgotPasswordField(),
-                const SizedBox(height: 20.0),
-                _buildLoginButton(),
-                const SizedBox(height: 5.0),
-                _buildSignUp(),
-                const SizedBox(height: 5.0),
-                _buildLoginButtonWithGoogle(),
-                const SizedBox(height: 20.0),
-                _buildLoginButtonWithAutoDesk(),
-                const SizedBox(height: 20.0),
-              ],
+      body: SafeArea(
+        child: SingleChildScrollView( // Bọc toàn bộ nội dung trong SingleChildScrollView
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // Đảm bảo Column chỉ chiếm không gian cần thiết
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  const SizedBox(height: 20.0),
+                  _logoLogin(),
+                  const SizedBox(height: 10.0),
+                  _buildTitle(),
+                  const SizedBox(height: 10.0),
+                  _buildEmailField(),
+                  const SizedBox(height: 10.0),
+                  _buildPasswordField(),
+                  const SizedBox(height: 8.0),
+                  _forgotPasswordField(),
+                  const SizedBox(height: 10.0),
+                  _buildLoginButton(),
+                  // const SizedBox(height: 5.0),
+                  _buildSignUp(),
+                  const SizedBox(height: 20.0),
+                  _buildLine(),
+                  const SizedBox(height: 20.0),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildLoginButtonWithGoogle(),
+                        const SizedBox(height: 20.0,width: 20.0,),
+                        _buildLoginButtonWithAutoDesk(),
+                        const SizedBox(height: 20.0, width: 20.0,),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -116,6 +132,7 @@ class _LoginFormState extends State<LoginForm> {
 
           if (userResponse.statusCode == 200) {
             var userResponseData = jsonDecode(userResponse.body);
+            print("object");
             print(userResponseData);
 
             if (userResponseData['statusCode'] == 200) {
@@ -132,6 +149,7 @@ class _LoginFormState extends State<LoginForm> {
                 username: userDataDetails['username'],
                 email: userDataDetails['email'],
               );
+              print(userData);
               // Lưu token vào SharedPreferences
               final prefs = await SharedPreferences.getInstance();
               await prefs.setString('accessToken', accessToken);
@@ -139,13 +157,16 @@ class _LoginFormState extends State<LoginForm> {
               // Điều hướng đến HomePage và truyền dữ liệu qua arguments
               Get.offAll(() => HomePage(),arguments: userData);
             } else {
+              print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
               _showErrorDialog();
             }
           } else {
+            print("kkkkkkkkkkkk");
             print('User data response body: ${userResponse.body}');
             _showErrorDialog();
           }
         } else {
+          print("dmmm");
           _showErrorDialog();
         }
       } else {
@@ -161,9 +182,6 @@ class _LoginFormState extends State<LoginForm> {
       _isLoading = false;
     });
   }
-
-
-
 
   void _showErrorDialog() {
     showDialog(
@@ -193,13 +211,16 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-
   Widget _buildTitle() {
-    return const Text(
-      'Đăng Nhập',
-      style: TextStyle(
-        fontSize: 30.0,
-        fontWeight: FontWeight.bold,
+    return const Align(
+      child: Center(
+        child: Text( 
+          'Đăng Nhập',
+          style: TextStyle(
+            fontSize: 30.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
@@ -211,7 +232,7 @@ class _LoginFormState extends State<LoginForm> {
         const Text(
           'Username', // Nhãn phía trên TextField
           style: TextStyle(
-            fontSize: 16.0,
+            fontSize: 14.0,
             fontWeight: FontWeight.bold,
             color: Color.fromARGB(255, 0, 0, 0),
           ),
@@ -221,7 +242,7 @@ class _LoginFormState extends State<LoginForm> {
           controller: _emailController,
           textAlign: TextAlign.start, // Căn chỉnh văn bản bên trong TextField
           decoration: const InputDecoration(
-            labelText: 'Email', // Nhãn phía trên TextField
+            labelText: 'Username', // Nhãn phía trên TextField
             labelStyle: TextStyle(color: Color(0xFFBDBDBD)),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
@@ -235,7 +256,6 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-
   Widget _buildPasswordField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start, // Căn chỉnh các thành phần bên trái
@@ -243,7 +263,7 @@ class _LoginFormState extends State<LoginForm> {
         const Text(
           'Password', // Nhãn phía trên TextField
           style: TextStyle(
-            fontSize: 16.0,
+            fontSize: 14.0,
             fontWeight: FontWeight.bold,
             color: Color.fromARGB(255, 0, 0, 0),
           ),
@@ -283,60 +303,84 @@ class _LoginFormState extends State<LoginForm> {
     return Align(
       alignment: Alignment.centerRight, 
       child: TextButton(
-        onPressed: () {
-          // Thực hiện hành động khi nhấn vào liên kết "Forgot Password?"
-          // Ví dụ: điều hướng đến một trang khác
-          print('Forgot Password button pressed');
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
-        },
+        onPressed: () => Get.to(() => ForgotPasswordScreen()), // Tạo trang forgotPassWord
         child: const Text(
           'Quên mật khẩu?', // Văn bản của liên kết
           style: TextStyle(
-            color: Color.fromARGB(255, 4, 255, 75), // Màu của liên kết
+            color: Color.fromARGB(255, 0, 0, 0), // Màu của liên kết
             fontSize: 15.0,
           ),
         ),
       ),
     );
   }
-
 
   Widget _buildLoginButton() {
     return InkWell(
       onTap: _isLoading ? null : _login,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 150.0),
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         decoration: BoxDecoration(
           color: const Color(0xFF269947),
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(15.0),
         ),
-        child: const Text(
-          'Đăng Nhập',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+        child: const Center(
+          child: Text(
+            'Đăng Nhập',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
     );
   }
 
+
   Widget _buildSignUp() {
-    return Align(
-      alignment: Alignment.centerLeft, 
-      child: TextButton(
-        onPressed: () => Get.to(() => SignUpScreen()),
-        child: const Text(
-          'Chưa có tài khoản, đăng kí', // Văn bản của liên kết
-          style: TextStyle(
-            color: Color.fromARGB(255, 4, 255, 75), // Màu của liên kết
-            fontSize: 15.0,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start, // Căn chỉnh các thành phần bên trái
+      children: <Widget>[
+        TextButton(
+          onPressed: () => Get.to(() => SignUpScreen()),
+          child: const Text(
+            'Chưa có tài khoản, đăng kí',
+            style: TextStyle(
+              color: Color.fromARGB(255, 0, 0, 0), // Màu của liên kết
+              fontSize: 12.0,
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
+
+  Widget _buildLine() {
+    return Stack(
+      alignment: Alignment.center, // Căn giữa các phần tử trong Stack
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0), // Khoảng trắng hai bên văn bản
+          child: Container(
+            height: 1.0, // Chiều cao của đường thẳng
+            color: Colors.black, // Màu của đường thẳng
+            width: double.infinity, // Chiều rộng của đường thẳng
+          ),
+        ),
+        const Text(
+          'Or signin by',
+          style: TextStyle(
+            backgroundColor: Colors.white,
+            color: Color.fromARGB(255, 0, 0, 0), // Màu của văn bản
+            fontSize: 17.0,
+          ),
+        ),
+      ],
+    );
+  }
+
 
   Widget _buildLoginButtonWithGoogle() {
     return InkWell(
@@ -368,9 +412,6 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-
-
-
   Widget _buildLoginButtonWithAutoDesk() {
     return InkWell(
       onTap: _isLoading ? null : _login,
@@ -399,5 +440,4 @@ class _LoginFormState extends State<LoginForm> {
       ),
     );
   }
-
 }

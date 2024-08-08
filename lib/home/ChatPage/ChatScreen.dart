@@ -6,18 +6,17 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(20.0,), // Chiều cao tùy chỉnh của AppBar
-        child: AppBar(
-          title: Text('Chat'),
-        ),
+      appBar: AppBar(
+        title: Text('Chat'),
       ),
-      body: Column(
-        children: <Widget>[
-          Buildheaderchat(),
-          _buildSearchBar(),
-          Buildlistchat(),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Buildheaderchat(),
+            _buildSearchBar(),
+            Buildlistchat(),
+          ],
+        ),
       ),
     );
   }

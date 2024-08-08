@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ideco_app/home/ChatPage/Chat/ChatDetailScreen.dart';
 
 class Buildlistchat extends StatefulWidget {
@@ -71,12 +72,7 @@ class _BuildlistchatState extends State<Buildlistchat> {
 
   Widget _buildChatItem(BuildContext context, String title, String subtitle, String time, String badgeCount, bool isGroup, String imagePath, Widget destinationPage) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => destinationPage),
-        );
-      },
+      onTap: () => Get.to(() => destinationPage),
       child: ListTile(
         leading: CircleAvatar(
           backgroundImage: AssetImage(imagePath),

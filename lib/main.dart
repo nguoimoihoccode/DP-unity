@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:ideco_app/ui_splash/HomeScreenSplash.dart';
 import 'package:ideco_app/utils/theme/theme.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 

@@ -15,6 +15,7 @@ class Buildheaderchat extends StatelessWidget {
     Get.lazyPut(() => HeaderController(APIServiceChat('http://172.16.1.58:6868', token), userId));
 
     final HeaderController controller = Get.find<HeaderController>();
+    print(controller);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -48,12 +49,7 @@ class Buildheaderchat extends StatelessWidget {
 
   Widget _buildHeaderItem(BuildContext context, String title, String subtitle, String imagePath, Widget destinationPage) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => destinationPage),
-        );
-      },
+      onTap: () => Get.to(() => destinationPage),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(

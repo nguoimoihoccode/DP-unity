@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:ideco_app/global/global.dart';
 import 'package:ideco_app/home/homePage.dart';
-import 'package:ideco_app/utils/constants/sizes.dart';
+// import 'package:ideco_app/utils/constants/sizes.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -19,9 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // Quay trở lại trang trước đó
-          },
+          onPressed: () => Get.back(),
         ),
       ),
       body: SignUpForm(),
@@ -47,186 +46,192 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                alignment: Alignment.center,
-                child: const Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30.0),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: "Email",
-                  labelStyle: TextStyle(color: Color(0xFFBDBDBD)),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE8E8E8), width: 2.0),
-                  ),
-                  filled: false,
-                  fillColor: Color(0xFFF6F6F6),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _firstName,
-                decoration: const InputDecoration(
-                  labelText: 'First Name',
-                  labelStyle: TextStyle(color: Color(0xFFBDBDBD)),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE8E8E8), width: 2.0),
-                  ),
-                  filled: true,
-                  fillColor: Color(0xFFF6F6F6),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _lastName,
-                decoration: const InputDecoration(
-                  labelText: 'Last Name',
-                  labelStyle: TextStyle(color: Color(0xFFBDBDBD)),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE8E8E8), width: 2.0),
-                  ),
-                  filled: true,
-                  fillColor: Color(0xFFF6F6F6),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _userName,
-                decoration: const InputDecoration(
-                  labelText: 'User Name',
-                  labelStyle: TextStyle(color: Color(0xFFBDBDBD)),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE8E8E8), width: 2.0),
-                  ),
-                  filled: true,
-                  fillColor: Color(0xFFF6F6F6),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _phonenumber,
-                decoration: const InputDecoration(
-                  labelText: 'Phone number',
-                  labelStyle: TextStyle(color: Color(0xFFBDBDBD)),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE8E8E8), width: 2.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _password,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: TextStyle(color: Color(0xFFBDBDBD)),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE8E8E8), width: 2.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 50.0),
-              InkWell(
-                onTap: () async {
-                  setState(() {
-                    _isLoading = true; // Start loading
-                  });
-
-                  String email = _emailController.text;
-                  String firstName = _firstName.text;
-                  String lastName = _lastName.text;
-                  String username = _userName.text;
-                  String activatedKey = Global.activatedKey;
-
-                  if (email.isNotEmpty && firstName.isNotEmpty && lastName.isNotEmpty && username.isNotEmpty) {
-                    Map<String, dynamic> signUpData = {
-                      'email': email,
-                      'firstName': firstName,
-                      'lastName': lastName,
-                      'username': username,
-                      'activatedKey': activatedKey,
-                    };
-
-                    String signUpJson = jsonEncode(signUpData);
-
-                    var url = Uri.parse('https://dpuapidev.corebim.com/auth/v1/UserRegister');
-                    var response = await http.post(
-                      url,
-                      headers: <String, String>{
-                        'Content-Type': 'application/json; charset=UTF-8',
-                      },
-                      body: signUpJson,
-                    );
-
-                    setState(() {
-                      _isLoading = false; // Stop loading
-                    });
-
-                    if (response.statusCode == 200) {
-                      var responseData = jsonDecode(response.body);
-                      if (responseData['statusCode'] == 200) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        );
-                      } else {
-                        _showErrorDialog('We have an error, we will try to fix it.');
-                      }
-                    } else {
-                      _showErrorDialog('We have an error, we will try to fix it.');
-                    }
-                  } else {
-                    setState(() {
-                      _isLoading = false; // Stop loading if fields are not filled
-                    });
-
-                    _showErrorDialog('Please enter all field data.');
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 150.0),
-                  decoration: BoxDecoration(
-                    color: Color(0xFF269947),
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
+    return SingleChildScrollView(
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.center,
                   child: const Text(
-                    'Sign Up',
+                    'Đăng kí',
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.0,
+                      fontSize: 30.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20.0),
-            ],
+                const SizedBox(height: 30.0),
+                TextField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: "Email",
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 22, 19, 19)),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+                    ),
+                    filled: true,
+                    fillColor: Color(0xFFF6F6F6),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                TextField(
+                  controller: _firstName,
+                  decoration: const InputDecoration(
+                    labelText: 'First Name',
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 22, 19, 19)),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+                    ),
+                    filled: true,
+                    fillColor: Color(0xFFF6F6F6),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                TextField(
+                  controller: _lastName,
+                  decoration: const InputDecoration(
+                    labelText: 'Last Name',
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 22, 19, 19)),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+                    ),
+                    filled: true,
+                    fillColor: Color(0xFFF6F6F6),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                TextField(
+                  controller: _userName,
+                  decoration: const InputDecoration(
+                    labelText: 'User Name',
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 22, 19, 19)),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+                    ),
+                    filled: true,
+                    fillColor: Color(0xFFF6F6F6),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                TextField(
+                  controller: _phonenumber,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone number',
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 22, 19, 19)),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                TextField(
+                  controller: _password,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 22, 19, 19)),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50.0),
+                InkWell(
+                  onTap: () async {
+                    setState(() {
+                      _isLoading = true; // Start loading
+                    });
+      
+                    String email = _emailController.text;
+                    String firstName = _firstName.text;
+                    String lastName = _lastName.text;
+                    String username = _userName.text;
+                    String password = _password.text;
+                    String phoneNumber = _phonenumber.text;
+                    String activatedKey = Global.activatedKey;
+      
+                    if (email.isNotEmpty && firstName.isNotEmpty && lastName.isNotEmpty && username.isNotEmpty) {
+                      Map<String, dynamic> signUpData = {
+                        'email': email,
+                        'firstName': firstName,
+                        'lastName': lastName,
+                        'username': username,
+                        'password': password,
+                        'phoneNumber': phoneNumber,
+                        'activatedKey': activatedKey,
+                      };
+      
+                      String signUpJson = jsonEncode(signUpData);
+      
+                      var url = Uri.parse('https://dpuapidev.corebim.com/auth/v1/UserRegister');
+                      var response = await http.post(
+                        url,
+                        headers: <String, String>{
+                          'Content-Type': 'application/json; charset=UTF-8',
+                        },
+                        body: signUpJson,
+                      );
+      
+                      setState(() {
+                        _isLoading = false; // Stop loading
+                      });
+      
+                      if (response.statusCode == 200) {
+                        var responseData = jsonDecode(response.body);
+                        if (responseData['statusCode'] == 200) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
+                        } else {
+                          _showErrorDialog('We have an error, we will try to fix it.');
+                        }
+                      } else {
+                        _showErrorDialog('We have an error, we will try to fix it.');
+                      }
+                    } else {
+                      setState(() {
+                        _isLoading = false; // Stop loading if fields are not filled
+                      });
+      
+                      _showErrorDialog('Please enter all field data.');
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF269947),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+              ],
+            ),
           ),
-        ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
     );
   }
 
