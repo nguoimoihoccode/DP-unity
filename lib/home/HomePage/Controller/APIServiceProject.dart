@@ -10,8 +10,8 @@ class APIServiceProject {
 
   Future<Map<String, dynamic>> fetchProject() async {
     final url = 'https://bimnextapi-dev.dpunity.com/v2/projects';
-    print('hehe');
-    // print(url);
+    // print('hehe');
+    // print(token);
     try {
       final response = await http.get(
         Uri.parse(url),
@@ -20,14 +20,13 @@ class APIServiceProject {
           'Authorization': 'Bearer $token',
         },
       );
-      print("wait");
+      // print("wait");
       
-
       if (response.statusCode == 200) {
-        print("konichiwa");
+        // print("konichiwa");
         return json.decode(response.body);
       } else {
-        print("dmmmmm");
+        // print("dmmmmm");
         throw Exception('Failed to load header items: ${response.statusCode}');
       }
     } catch (e) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:ideco_app/home/HomePage/HomeScreen.dart';
-import 'package:ideco_app/home/HomePage/projectSelection.dart';
+import 'package:ideco_app/home/HomePage/ProjectScreen/projectSelection.dart';
 import 'dart:convert';
 
 class PartnerSelectionScreen extends StatefulWidget {
@@ -11,7 +11,7 @@ class PartnerSelectionScreen extends StatefulWidget {
 }
 
 class _PartnerSelectionScreenState extends State<PartnerSelectionScreen> {
-  List<String> partners = [];
+  List<Map<String, dynamic>> partners = [];
   bool isLoading = false;
   String errorMessage = '';
 
@@ -33,7 +33,10 @@ class _PartnerSelectionScreenState extends State<PartnerSelectionScreen> {
         final data = json.decode(response.body);
         final List<dynamic> partnersData = data['data'];
         setState(() {
-          partners = partnersData.map((partner) => partner['name'] as String).toList();
+          partners = partnersData.map((partner) => {
+            'name': partner['name'],
+            'id': partner['_id']
+          }).toList();
         });
       } else {
         setState(() {
@@ -92,13 +95,18 @@ class _PartnerSelectionScreenState extends State<PartnerSelectionScreen> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(
-                          partners[index],
+                          partners[index]['name'],
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.black,
                           ),
                         ),
-                        onTap: () => Get.to(() => ProjectSelectionScreen(), arguments: arguments),
+                        onTap: () { 
+                          final updatedArguments = {
+                            ...arguments, // Giữ nguyên các đối số cũ
+                            'partnerName': partners[index]['name'] // Thêm partnerName mới
+                          };
+                          Get.to(() => ProjectSelectionScreen(), arguments: updatedArguments);},
                         trailing: Icon(Icons.chevron_right),
                       );
                     },

@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ideco_app/global/AuthProvider.dart';
 import 'package:ideco_app/global/User.dart';
-import 'package:ideco_app/home/HomePage/PartnerSelection.dart';
-import 'package:ideco_app/home/HomePage/projectSelection.dart';
+import 'package:ideco_app/home/HomePage/PartnerScreen/PartnerSelection.dart';
+import 'package:ideco_app/home/HomePage/ProjectScreen/projectSelection.dart';
 
 class Homescreen extends StatelessWidget {
   @override
@@ -12,7 +12,6 @@ class Homescreen extends StatelessWidget {
     
     final arguments = Get.arguments;
     // Kiểm tra nếu arguments là Map hoặc User
-    print(arguments);
     final Map<String, dynamic>? userInfo = arguments is Map<String, dynamic> ? arguments : null;
     // final User? userData = arguments is User ? arguments : null;
 

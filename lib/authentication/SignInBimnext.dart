@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:iconsax/iconsax.dart';
 import 'package:ideco_app/authentication/SignInWithGoogle.dart';
 import 'package:ideco_app/authentication/SignUp.dart';
 import 'package:ideco_app/common/widgets/login_sign_up/form_divider.dart';
@@ -33,10 +34,12 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
   bool _isLoading = false;
+  var accessToken = ''.obs;
+  var refreshToken = ''.obs;
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEAF3E7),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -123,7 +126,10 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
         else {
           _showErrorDialog();
         }
-      } else {
+      } else if(response.statusCode == 401){
+        //refresh token and call getUser again     
+      }
+       else {
         print('Response body: ${response.body}');
         print('Response body: ${response.statusCode}');
         _showErrorDialog();
@@ -138,6 +144,44 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
       _isLoading = false;
     });
   }
+
+  // Future<void> refreshAccessToken() async {
+  //   // Gửi yêu cầu refresh token
+  //   var response = await http.post(
+  //     Uri.parse('https://bimnextapi-dev.dpunity.com/v2/auth/login'),
+  //     body: {'refresh_token': refreshToken.value},
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     var data = jsonDecode(response.body);
+  //     accessToken.value = data['access_token'];
+  //     refreshToken.value = data['refresh_token'];
+  //   } else {
+  //     print("Fail refresh token");
+  //     // Xử lý lỗi khi refresh token thất bại
+  //   }
+  // }
+
+  // Future<http.Response> makeAuthenticatedRequest(String url) async {
+  //   // Kiểm tra xem accessToken có hết hạn hay không (logic của bạn)
+  //   if (isAccessTokenExpired()) {
+  //     await refreshAccessToken();
+  //   }
+
+  //   // Tiến hành gửi request với accessToken mới
+  //   var response = await http.get(
+  //     Uri.parse(url),
+  //     headers: {'Authorization': 'Bearer ${accessToken.value}'},
+  //   );
+
+  //   return response;
+  // }
+
+  // bool isAccessTokenExpired() {
+  //   // Kiểm tra thời hạn của accessToken (bạn cần tự implement)
+  //   // return true nếu đã hết hạn, false nếu còn hạn
+  //   return true;
+  // }
 
   void _showErrorDialog() {
     showDialog(
@@ -162,18 +206,20 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
   Widget _logoLogin() {
     return Image.asset(
       'assets/icons/splashhomescreen.png', 
-      width: 100, 
-      height: 100,
+      width: 150, 
+      height: 150,
     );
   }
 
 
   Widget _buildTitle() {
-    return const Text(
-      'Đăng Nhập',
-      style: TextStyle(
-        fontSize: 30.0,
-        fontWeight: FontWeight.bold,
+    return Center(
+      child: const Text(
+        'Đăng Nhập',
+        style: TextStyle(
+          fontSize: 30.0,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -239,7 +285,7 @@ class _LoginFormBimnextState extends State<LoginFormBimnext> {
             suffixIcon: IconButton(
               icon: Icon(
                 _obscureText ? Icons.visibility_off : Icons.visibility,
-                color: Colors.grey,
+                color: Color.fromARGB(255, 0, 0, 0),
               ),
               onPressed: () {
                 setState(() {
