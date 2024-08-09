@@ -6,13 +6,21 @@ import 'package:ideco_app/home/ChatPage/GroupChat/GroupChatScreen.dart';
 import 'package:ideco_app/home/ChatPage/ProjectChat/ProjectChatScreen.dart';
 
 class Buildheaderchat extends StatelessWidget {
-  final String userId = '669a47d035365bb236f30d7f'; // Thay bằng userId thực tế
-  final String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Njk5ZWQzNGM4YTY2MDljYTM5NGQ5ZGUiLCJlbWFpbCI6ImdpYW5nbmd1eWVuLjAxMTIxMEBnbWFpbC5jb20iLCJyb2xlIjoiZW5kX3VzZXIiLCJpYXQiOjE3MjIzMDc2MjYsImV4cCI6MTcyMjQ4MDQyNn0.20SPKKF3uMWB5a6WtwZaRyr6cnqT708aS6XiTA57vHA'; // Thay bằng token thực tế
-
+  // final String userId = '669a47d035365bb236f30d7f'; // Thay bằng userId thực tế
+  // final String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Njk5ZWQzNGM4YTY2MDljYTM5NGQ5ZGUiLCJlbWFpbCI6ImdpYW5nbmd1eWVuLjAxMTIxMEBnbWFpbC5jb20iLCJyb2xlIjoiZW5kX3VzZXIiLCJpYXQiOjE3MjIzMDc2MjYsImV4cCI6MTcyMjQ4MDQyNn0.20SPKKF3uMWB5a6WtwZaRyr6cnqT708aS6XiTA57vHA'; // Thay bằng token thực tế
+  
   @override
   Widget build(BuildContext context) {
+    final arguments = Get.arguments;
+    // print(arguments);
+    // print('Partner Name: ${arguments['partnerName']}');
+    final Map<dynamic, dynamic>? userInfo = arguments is Map<dynamic, dynamic> ? arguments : null;
+    final String token = userInfo?['access_token'];
+    final String userId = userInfo?['user']?['id'];
+    // final String partnerName = arguments['partnerName'];
     // Lazy load HeaderController khi cần
-    Get.lazyPut(() => HeaderController(APIServiceChat('http://172.16.1.58:6868', token), userId));
+    // print('https://bimnextapi-dev.dpunity.com/v2/teams-chat/find-all-by-user/${userId}');
+    Get.lazyPut(() => HeaderController(APIServiceChat('https://bimnextapi-dev.dpunity.com/v2/teams-chat/find-all-by-user/${userId}', token), userId));
 
     final HeaderController controller = Get.find<HeaderController>();
     print(controller);

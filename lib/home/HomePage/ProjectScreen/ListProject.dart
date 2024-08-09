@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ideco_app/home/HomePage/Controller/ProjectController.dart';
 import 'package:ideco_app/home/homePage.dart';
 
-class ListProjectSelection extends StatelessWidget {
-  final List<dynamic> projectItems; // Danh sách dự án
+class ListProject extends StatelessWidget {
+  const ListProject({
+    super.key,
+    required this.projectController,
+    required this.arguments,
+  });
 
-  ListProjectSelection({required this.projectItems});
+  final ProjectController projectController;
+  final arguments;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: projectItems.length,
+      itemCount: projectController.projectItems['data'].length,
       itemBuilder: (context, index) {
-        final project = projectItems[index];
+        final project = projectController.projectItems['data'][index];
         final customer = project['customer'];
         final category = project['category'];
-
+    
         return ExpansionTile(
           title: ListTile(
             leading: const CircleAvatar(
@@ -60,7 +66,7 @@ class ListProjectSelection extends StatelessWidget {
                   Text(project['createdAt'] ?? 'Không có ngày tạo'),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => Get.to(() => HomePage(), arguments: project),
+                    onPressed: () => Get.to(() => HomePage(), arguments: arguments),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                     ),
@@ -72,7 +78,7 @@ class ListProjectSelection extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                 ],
               ),
             ),

@@ -20,9 +20,12 @@ class HeaderController extends GetxController {
   Future<void> fetchHeaderItems() async {
     loading.value = true;
     try {
+      print('5');
       var items = await apiService.fetchHeaderItems(userId);
       headerItems.value = items;
+      print(items);
     } catch (e) {
+      print('6');
       print(e);
     } finally {
       loading.value = false;

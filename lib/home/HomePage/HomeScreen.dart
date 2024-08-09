@@ -5,6 +5,7 @@ import 'package:ideco_app/global/AuthProvider.dart';
 import 'package:ideco_app/global/User.dart';
 import 'package:ideco_app/home/HomePage/PartnerScreen/PartnerSelection.dart';
 import 'package:ideco_app/home/HomePage/ProjectScreen/projectSelection.dart';
+import 'package:ideco_app/utils/constants/sizes.dart';
 
 class Homescreen extends StatelessWidget {
   @override
@@ -121,6 +122,11 @@ class Homescreen extends StatelessWidget {
                   ),
                 ),
               ),
+              // Thêm slider ở đây hoặc ở padding trên
+              // Padding(
+              //   padding: const EdgeInsets.all(TSizes.defaultSpace),
+              //   // child: CarouselSlider,
+              //   ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: SizedBox(
