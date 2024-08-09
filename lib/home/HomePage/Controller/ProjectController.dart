@@ -22,7 +22,7 @@ class ProjectController extends GetxController {
       var items = await apiServiceProject.fetchProject();
       projectItems.value = items;
       print("wwwwww");
-      print(items);
+      print(projectItems.value);
     } catch (e) {
       print(loading.value);
       print("weeee");

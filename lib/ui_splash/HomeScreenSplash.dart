@@ -34,11 +34,13 @@ class _SplashScreenState extends State<SplashScreen> {
                 height: 150,
               ),
               const SizedBox(height: 20), // Thêm khoảng cách dưới hình ảnh
-              const Text(
-                'Quản lý ứng dụng xây dựng với',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+              Center(
+                child: const Text(
+                  'Quản lý ứng dụng xây dựng với',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),

@@ -10,7 +10,8 @@ class APIServiceProject {
 
   Future<Map<String, dynamic>> fetchProject() async {
     final url = 'https://bimnextapi-dev.dpunity.com/v2/projects';
-    print(url);
+    print('hehe');
+    // print(url);
     try {
       final response = await http.get(
         Uri.parse(url),
@@ -23,7 +24,7 @@ class APIServiceProject {
       
 
       if (response.statusCode == 200) {
-        print(json.decode(response.body));
+        print("konichiwa");
         return json.decode(response.body);
       } else {
         print("dmmmmm");
